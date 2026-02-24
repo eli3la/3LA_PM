@@ -79,8 +79,7 @@ export default function App(){
                       <Bt sx={{padding:"3px 8px",fontSize:9}} onClick={()=>sMo({title:`${cat.name} › ${proj.name}`,content:eP(cat,proj)})}>↗</Bt>
                       <B bg={st.c+"18"} color={st.c}>{st.l}</B>
                       <DB onConfirm={()=>setData(d=>d.map(c=>c.id!==cat.id?c:{...c,projects:c.projects.filter(p=>p.id!==proj.id)}))}/></div></div>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginTop:6}}><Br p={pp} color={cat.color}/><span style={{fontSize:9.5,color:"#555"}}>{pd}/{pt.length}</span></div>
-                  </div></div>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginTop:6}}><Br p={pp} color={cat.color}/><span style={{fontSize:9.5,color:"#555"}}>{pd}/{pt.length}</span></div></div>
                 {ex[proj.id]!==false&&<div style={{borderTop:"1px solid "+css.bdr}}>
                   {proj.subprojects.map(sp=>{const sd=sp.tasks.filter(t=>t.done).length;const spp=sp.tasks.length?(sd/sp.tasks.length)*100:0;
                     return <div key={sp.id} style={{borderBottom:"1px solid #14141e"}}>
