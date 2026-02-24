@@ -14,7 +14,7 @@ const pn=id=>PEOPLE.find(p=>p.id===id);
 const addDays=(d,n)=>{const x=new Date(d+"T00:00:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
 const gAll=data=>{const o=[];data.forEach(c=>c.projects.forEach(p=>p.subprojects.forEach(s=>s.tasks.forEach(t=>o.push({...t,catId:c.id,catName:c.name,catColor:c.color,projId:p.id,projName:p.name,projTags:p.tags||[],spId:s.id,spName:s.name,spTags:s.tags||[]})))));return o};
 const css={bg:"#08080e",card:"#111119",bdr:"#1a1a24",sub:"#0d0d14"};
-const GS="2026-01-01",GE="2026-07-01",TD=dba(GS,GE),TOD=dba(GS,new Date().toISOString().slice(0,10));
+const GS="2026-01-01",GE="2026-07-01",TD=dba(GS,GE);
 const LS_D="3la_data",LS_P="3la_people";
 const load=(k,fb)=>{try{if(typeof localStorage==="undefined")return fb;const v=localStorage.getItem(k);if(!v)return fb;const p=JSON.parse(v);if(k===LS_D&&(!Array.isArray(p)||!p[0]?.projects))return fb;if(k===LS_P&&(!Array.isArray(p)||!p[0]?.name))return fb;return p}catch(e){return fb}};
 const save=(k,v)=>{try{if(typeof localStorage!=="undefined")localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -118,6 +118,7 @@ export default function App(){
       {gs.map(g=>!g.items.length?null:<div key={g.t} style={{marginBottom:20}}><div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}><div style={{width:6,height:6,borderRadius:3,background:g.a}}/><span style={{fontSize:10,fontWeight:650,letterSpacing:1.5,textTransform:"uppercase",color:g.a}}>{g.t} ({g.items.length})</span></div>{g.items.map(t=><div key={t.id} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 13px",background:css.card,border:"1px solid "+css.bdr,borderRadius:8,marginBottom:5,borderLeft:`3px solid ${g.a}`}}><div style={{flex:1}}><div style={{fontSize:12,color:"#d0d0da"}}>{t.text}</div><div style={{fontSize:9.5,color:"#4a4a5a",marginTop:1}}>{t.catName} › {t.projName} › {t.spName} · {fm(t.due)}</div></div><Tags tags={t.tags} small/><B bg={PR[t.priority].c+"1a"} color={PR[t.priority].c}>{PR[t.priority].l}</B><Du due={t.due} done={false}/></div>)}</div>)}</div>}
   function GV(){
     const[mo,sMo]=useState(null);const[fC,sFC]=useState(null);const chartRef=useRef(null);
+    const today=new Date();today.setHours(0,0,0,0);const todayStr=today.toISOString().slice(0,10);const TOD=dba(GS,todayStr);
     const ms=[{n:"Jan",d:31},{n:"Feb",d:28},{n:"Mar",d:31},{n:"Apr",d:30},{n:"May",d:31},{n:"Jun",d:30}];
     const fd=fC?data.filter(c=>c.id===fC):data;const rows=[];
     fd.forEach(c=>c.projects.forEach(p=>{const at=[];p.subprojects.forEach(s=>s.tasks.forEach(t=>at.push(t)));const pc=at.length?(at.filter(t=>t.done).length/at.length)*100:0;rows.push({type:"proj",c,p,pc,sd:p.startDate,ed:p.endDate,label:`${c.name} › ${p.name}`,id:p.id,catId:c.id});p.subprojects.forEach(s=>{const sp=s.tasks.length?(s.tasks.filter(t=>t.done).length/s.tasks.length)*100:0;rows.push({type:"sp",c,p,s,pc:sp,sd:s.startDate||p.startDate,ed:s.endDate||p.endDate,label:s.name,id:s.id,catId:c.id,projId:p.id});s.tasks.forEach(t=>{rows.push({type:"task",c,p,s,t,pc:t.done?100:0,sd:t.due,ed:t.due,label:t.text,id:t.id,catId:c.id,projId:p.id,spId:s.id})})})}));
@@ -168,7 +169,7 @@ export default function App(){
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <div style={{padding:"16px 20px 0",borderBottom:"1px solid #14141e"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-        <div><div style={{fontSize:18,fontWeight:700,letterSpacing:-.5}}><span style={{color:"#e94560"}}>3LA</span> <span style={{color:"#555",fontWeight:400}}>PM</span></div><div style={{fontSize:10,color:"#444",marginTop:1}}>Week of {new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div></div>
+        <div><div style={{fontSize:18,fontWeight:700,letterSpacing:-.5}}><span style={{color:"#e94560"}}>3LA</span> <span style={{color:"#555",fontWeight:400}}>PM</span></div><div style={{fontSize:10,color:"#444",marginTop:1}}>Week of {(()=>{const d=new Date();const day=d.getDay();const diff=d.getDate()-day+(day===0?-6:1);d.setDate(diff);return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})})()}</div></div>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
           <PM people={people} setPeople={setPeople}/>
           <Bt sx={{padding:"4px 8px",fontSize:9}} onClick={()=>{if(confirm("Reset all data to defaults?")){setData(INIT);setPeople(PEOPLE)}}}>↺</Bt>
