@@ -6,7 +6,7 @@ const INIT=[{id:"trak",name:"Trak",color:"#e94560",projects:[{id:"tp",name:"Prod
 const ST={"on-track":{l:"On Track",c:"#0f9b8e"},"at-risk":{l:"At Risk",c:"#f5a623"},blocked:{l:"Blocked",c:"#e94560"},complete:{l:"Complete",c:"#6b7280"}};
 const PR={high:{l:"High",c:"#e94560",s:0},medium:{l:"Med",c:"#f5a623",s:1},low:{l:"Low",c:"#6b7280",s:2}};
 const CL=["#e94560","#f5a623","#0f9b8e","#8b5cf6","#3b82f6","#ec4899","#14b8a6","#f97316"];
-const du=d=>Math.round((new Date(d+"T00:00:00")-new Date("2026-02-23T00:00:00"))/864e5);
+const du=d=>{const now=new Date();now.setHours(0,0,0,0);return Math.round((new Date(d+"T00:00:00")-now)/864e5)};
 const fm=d=>new Date(d+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"});
 const dba=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
 const uid=()=>"_"+Math.random().toString(36).slice(2,9);
@@ -14,7 +14,7 @@ const pn=id=>PEOPLE.find(p=>p.id===id);
 const addDays=(d,n)=>{const x=new Date(d+"T00:00:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
 const gAll=data=>{const o=[];data.forEach(c=>c.projects.forEach(p=>p.subprojects.forEach(s=>s.tasks.forEach(t=>o.push({...t,catId:c.id,catName:c.name,catColor:c.color,projId:p.id,projName:p.name,projTags:p.tags||[],spId:s.id,spName:s.name,spTags:s.tags||[]})))));return o};
 const css={bg:"#08080e",card:"#111119",bdr:"#1a1a24",sub:"#0d0d14"};
-const GS="2026-01-01",GE="2026-07-01",TD=dba(GS,GE),TOD=dba(GS,"2026-02-23");
+const GS="2026-01-01",GE="2026-07-01",TD=dba(GS,GE),TOD=dba(GS,new Date().toISOString().slice(0,10));
 const LS_D="3la_data",LS_P="3la_people";
 const load=(k,fb)=>{try{if(typeof localStorage==="undefined")return fb;const v=localStorage.getItem(k);if(!v)return fb;const p=JSON.parse(v);if(k===LS_D&&(!Array.isArray(p)||!p[0]?.projects))return fb;if(k===LS_P&&(!Array.isArray(p)||!p[0]?.name))return fb;return p}catch(e){return fb}};
 const save=(k,v)=>{try{if(typeof localStorage!=="undefined")localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -169,7 +169,7 @@ export default function App(){
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <div style={{padding:"16px 20px 0",borderBottom:"1px solid #14141e"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-        <div><div style={{fontSize:18,fontWeight:700,letterSpacing:-.5}}><span style={{color:"#e94560"}}>3LA</span> <span style={{color:"#555",fontWeight:400}}>PM</span></div><div style={{fontSize:10,color:"#444",marginTop:1}}>Week of Feb 23, 2026</div></div>
+        <div><div style={{fontSize:18,fontWeight:700,letterSpacing:-.5}}><span style={{color:"#e94560"}}>3LA</span> <span style={{color:"#555",fontWeight:400}}>PM</span></div><div style={{fontSize:10,color:"#444",marginTop:1}}>Week of {new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div></div>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
           <PM people={people} setPeople={setPeople}/>
           <Bt sx={{padding:"4px 8px",fontSize:9}} onClick={()=>{if(confirm("Reset all data to defaults?")){setData(INIT);setPeople(PEOPLE)}}}>↺</Bt>
