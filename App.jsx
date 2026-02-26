@@ -24,8 +24,19 @@ const Br=({p,color:c,h=3})=><div style={{flex:1,height:h,background:css.bdr,bord
 const Du=({due:d,done})=>{if(done)return <span style={{fontSize:10,color:"#444"}}>Done</span>;const v=du(d);return <span style={{fontSize:10,color:v<0?"#e94560":v<=3?"#f5a623":"#555",fontWeight:v<=3?650:400}}>{v<0?Math.abs(v)+"d late":v===0?"Today":v+"d"}</span>};
 const Bt=({children,accent:a,onClick,sx})=><div onClick={onClick} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"5px 10px",background:a?a+"18":"#1a1a28",border:`1px solid ${a?a+"30":"#252536"}`,borderRadius:6,cursor:"pointer",fontSize:10,color:a||"#888",fontWeight:600,...sx}}>{children}</div>;
 const vd=v=>v&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&parseInt(v.slice(0,4))>1999;
+function DatePick({value:val,onChange,style:sx}){
+  const[y,m,d]=val?val.split("-").map(Number):[2026,3,1];
+  const up=(ny,nm,nd)=>{const v=`${ny}-${String(nm).padStart(2,"0")}-${String(nd).padStart(2,"0")}`;if(vd(v))onChange({target:{value:v}})};
+  const ds=Array.from({length:31},(_,i)=>i+1);const ms=[{v:1,l:"Jan"},{v:2,l:"Feb"},{v:3,l:"Mar"},{v:4,l:"Apr"},{v:5,l:"May"},{v:6,l:"Jun"},{v:7,l:"Jul"},{v:8,l:"Aug"},{v:9,l:"Sep"},{v:10,l:"Oct"},{v:11,l:"Nov"},{v:12,l:"Dec"}];const ys=[2025,2026,2027,2028];
+  const ss={background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,color:"#aaa",fontSize:10,padding:"3px 2px",outline:"none"};
+  return <div style={{display:"inline-flex",gap:2,alignItems:"center",...sx}}>
+    <select value={m} onChange={e=>up(y,+e.target.value,d)} style={ss}>{ms.map(x=><option key={x.v} value={x.v}>{x.l}</option>)}</select>
+    <select value={d} onChange={e=>up(y,m,+e.target.value)} style={ss}>{ds.map(x=><option key={x} value={x}>{x}</option>)}</select>
+    <select value={y} onChange={e=>up(+e.target.value,m,d)} style={ss}>{ys.map(x=><option key={x} value={x}>{x}</option>)}</select>
+  </div>
+}
 const In=({style:sx,onChange:oc,type:tp,...r})=>{
-  if(tp==="date"){const{value:val,...rest}=r;return <input {...rest} type="date" defaultValue={val} key={val} onBlur={e=>{if(vd(e.target.value)&&oc)oc(e)}} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 9px",color:"#ddd",fontSize:11,outline:"none",...sx}}/>}
+  if(tp==="date")return <DatePick value={r.value} onChange={oc} style={sx}/>;
   return <input {...r} type={tp} onChange={oc} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 9px",color:"#ddd",fontSize:11,outline:"none",...sx}}/>
 };
 const Se=({children,...r})=><select {...r} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 7px",color:"#aaa",fontSize:10}}>{children}</select>;
