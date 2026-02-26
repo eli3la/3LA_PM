@@ -25,8 +25,8 @@ const Du=({due:d,done})=>{if(done)return <span style={{fontSize:10,color:"#444"}
 const Bt=({children,accent:a,onClick,sx})=><div onClick={onClick} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"5px 10px",background:a?a+"18":"#1a1a28",border:`1px solid ${a?a+"30":"#252536"}`,borderRadius:6,cursor:"pointer",fontSize:10,color:a||"#888",fontWeight:600,...sx}}>{children}</div>;
 const vd=v=>v&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&parseInt(v.slice(0,4))>1999;
 const In=({style:sx,onChange:oc,type:tp,...r})=>{
-  const handleChange=tp==="date"?(e=>{if(vd(e.target.value)&&oc)oc(e)}):oc;
-  return <input {...r} type={tp} onChange={handleChange} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 9px",color:"#ddd",fontSize:11,outline:"none",...sx}}/>
+  if(tp==="date"){const{value:val,...rest}=r;return <input {...rest} type="date" defaultValue={val} key={val} onBlur={e=>{if(vd(e.target.value)&&oc)oc(e)}} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 9px",color:"#ddd",fontSize:11,outline:"none",...sx}}/>}
+  return <input {...r} type={tp} onChange={oc} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 9px",color:"#ddd",fontSize:11,outline:"none",...sx}}/>
 };
 const Se=({children,...r})=><select {...r} style={{background:css.bg,border:"1px solid #1e1e2e",borderRadius:5,padding:"6px 7px",color:"#aaa",fontSize:10}}>{children}</select>;
 function IE({value:val,onSave,style:sx}){const[e,sE]=useState(false);const[v,sV]=useState(val);if(!e)return <span onDoubleClick={()=>{sV(val);sE(true)}} style={{cursor:"pointer",...sx}} title="Double-click to edit">{val}</span>;return <input autoFocus value={v} onChange={e=>sV(e.target.value)} onBlur={()=>{if(v.trim()&&v!==val)onSave(v.trim());sE(false)}} onKeyDown={e=>{if(e.key==="Enter"){if(v.trim())onSave(v.trim());sE(false)}if(e.key==="Escape")sE(false)}} style={{background:css.bg,border:"1px solid #e94560",borderRadius:4,padding:"2px 6px",color:"#ddd",fontSize:"inherit",fontWeight:"inherit",outline:"none",width:"100%"}}/>}
